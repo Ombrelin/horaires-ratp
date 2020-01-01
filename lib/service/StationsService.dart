@@ -1,11 +1,10 @@
 import 'dart:convert';
 
 import 'package:horaires_ratp/components/StationsList.dart';
-import 'package:horaires_ratp/model/Station.dart';
+import 'package:horaires_ratp/model/Database.dart';
 import 'package:http/http.dart' as http;
 
 class StationService {
-
   Future<List<Station>> getStations(String type, int line, String way) async {
     final response = await http.get(
         "https://api-ratp.pierre-grimaud.fr/v4/stations/${type}/${line}?way=${way}");
@@ -17,7 +16,7 @@ class StationService {
       List<dynamic> stationsJSON = result["stations"];
 
       for (var station in stationsJSON) {
-        Station s = Station(station["name"], station["slug"]);
+        Station s = Station(name: station["name"], slug: station["slug"]);
         stations.add(s);
       }
 
@@ -26,5 +25,4 @@ class StationService {
       throw Exception("Failed to load stations");
     }
   }
-
 }

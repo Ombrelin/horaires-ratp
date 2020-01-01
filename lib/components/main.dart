@@ -1,8 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:horaires_ratp/model/Database.dart';
 import 'NewStation.dart';
 import 'StationsList.dart';
 
-void main() => runApp(MyApp());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  final bool isInitialized = await StationsModel().initializeDB();
+  if (isInitialized == true){
+    runApp(MyApp());
+  } else {
+
+  }
+}
 
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.

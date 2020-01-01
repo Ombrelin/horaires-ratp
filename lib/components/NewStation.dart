@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:horaires_ratp/model/Station.dart';
+import 'package:horaires_ratp/model/Database.dart';
 import 'package:horaires_ratp/service/StationsService.dart';
 
 class _NewStationState extends State<NewStation> {
@@ -7,6 +7,7 @@ class _NewStationState extends State<NewStation> {
   String _type;
   String _way;
   List<Station> _stations = List<Station>();
+  List<Station> _addedStations = List<Station>();
 
   final StationService service = new StationService();
 
@@ -50,14 +51,21 @@ class _NewStationState extends State<NewStation> {
     }
   }
 
+  void handleClickAdd() {
+    for (Station s in _addedStations) {
+      s.save();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text("Ajouter une station"),
       ),
-      floatingActionButton:
-          FloatingActionButton(child: Icon(Icons.check), onPressed: () {}),
+      floatingActionButton: FloatingActionButton(
+          child: Icon(Icons.check),
+          onPressed: _addedStations.length == 0 ? null : handleClickAdd),
       body: Container(
         padding: EdgeInsets.all(10),
         child: Column(
@@ -110,7 +118,11 @@ class _NewStationState extends State<NewStation> {
                         children: <Widget>[
                           Checkbox(
                             value: false,
-                            onChanged: (value) {},
+                            onChanged: (value) {
+                              if (value) {
+                                _addedStations.add(_stations[index]);
+                              }
+                            },
                           ),
                           Text(_stations[index].name),
                         ],

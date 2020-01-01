@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:horaires_ratp/model/Database.dart';
 
 class StationsList extends StatefulWidget {
   @override
@@ -9,16 +10,34 @@ class StationsList extends StatefulWidget {
 }
 
 class _StationsListState extends State<StationsList> {
+  List<Station> _stations = List<Station>();
+
+  _StationsListState() {
+    Station().select().toList().then((value) {
+      setState(() {
+        _stations.addAll(_stations);
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
-        child: ListView(
-      children: <Widget>[StationComponent()],
-    ));
+        child: ListView.builder(
+            itemCount: _stations.length,
+            itemBuilder: (context, index) {
+              return StationComponent(
+                  _stations[index].name, _stations[index].slug);
+            }));
   }
 }
 
 class StationComponent extends StatelessWidget {
+  String _name;
+  String _slug;
+
+  StationComponent(String this._name, String this._slug);
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -28,15 +47,9 @@ class StationComponent extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                Text("Test Station", textAlign: TextAlign.left),
+                Text(_name, textAlign: TextAlign.left),
                 Column(
-                  children: <Widget>[
-                    Row(children: <Widget>[
-                      Text('Bus 180 \t'),
-                      Text("2\t"),
-                      Text("12\t")
-                    ])
-                  ],
+                  children: <Widget>[Row(children: <Widget>[])],
                 )
               ],
             )),
