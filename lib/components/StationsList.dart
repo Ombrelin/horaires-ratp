@@ -13,12 +13,12 @@ class _StationsListState extends State<StationsList> {
   Widget build(BuildContext context) {
     return Container(
         child: ListView(
-      children: <Widget>[Station()],
+      children: <Widget>[StationComponent()],
     ));
   }
 }
 
-class Station extends StatelessWidget {
+class StationComponent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(

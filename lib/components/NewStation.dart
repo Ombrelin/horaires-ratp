@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:horaires_ratp/model/Station.dart';
 import 'package:horaires_ratp/service/StationsService.dart';
 
 class _NewStationState extends State<NewStation> {
   final _lineNumberController = TextEditingController();
   String _type;
   String _way;
+  List<Station> _stations = List<Station>();
 
   final StationService service = new StationService();
 
@@ -33,12 +35,18 @@ class _NewStationState extends State<NewStation> {
       print("Way : ${this._way}");
       print("Line : ${this._lineNumberController.text}");
       print("Type : ${this._type}");
-      try{
-        service.getStations(_type, int.parse(_lineNumberController.text), _way);
-      }
-      catch(e){
-        Scaffold.of(context).showSnackBar(SnackBar(content: Text(e.toString()),));
-      }
+
+      service
+          .getStations(_type, int.parse(_lineNumberController.text), _way)
+          .then((stations) {
+        setState(() {
+          _stations = stations;
+        });
+      }).catchError((error) {
+        Scaffold.of(context).showSnackBar(SnackBar(
+          content: Text(error.toString()),
+        ));
+      });
     }
   }
 
@@ -61,7 +69,8 @@ class _NewStationState extends State<NewStation> {
                   value: _type,
                   hint: Text("Type"),
                   isExpanded: true,
-                  items: <String>['metros', 'rers', 'buses'].map((String value) {
+                  items:
+                      <String>['metros', 'rers', 'buses'].map((String value) {
                     return new DropdownMenuItem<String>(
                       value: value,
                       child: new Text(value),
@@ -92,6 +101,21 @@ class _NewStationState extends State<NewStation> {
                   }).toList(),
                   onChanged: _handleChangeWay,
                 )),
+            Container(
+                height: MediaQuery.of(context).size.height / 4,
+                child: ListView.builder(
+                    itemCount: _stations.length,
+                    itemBuilder: (context, index) {
+                      return Row(
+                        children: <Widget>[
+                          Checkbox(
+                            value: false,
+                            onChanged: (value) {},
+                          ),
+                          Text(_stations[index].name),
+                        ],
+                      );
+                    }))
           ],
         ),
       ),
