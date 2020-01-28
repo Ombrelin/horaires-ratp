@@ -33,6 +33,10 @@ class TableStation extends SqfEntityTableBase {
     fields = [
       SqfEntityFieldBase('name', DbType.text),
       SqfEntityFieldBase('slug', DbType.text),
+      SqfEntityFieldBase('type', DbType.text),
+      SqfEntityFieldBase('way', DbType.text),
+      SqfEntityFieldBase('line', DbType.text),
+      SqfEntityFieldBase('destination', DbType.text),
     ];
     super.init();
   }
@@ -65,25 +69,43 @@ class StationsModel extends SqfEntityModelProvider {
 // BEGIN ENTITIES
 // region Station
 class Station {
-  Station({this.id, this.name, this.slug, this.isDeleted}) {
+  Station(
+      {this.id,
+      this.name,
+      this.slug,
+      this.type,
+      this.way,
+      this.line,
+      this.destination,
+      this.isDeleted}) {
     _setDefaultValues();
   }
-  Station.withFields(this.name, this.slug, this.isDeleted) {
+  Station.withFields(this.name, this.slug, this.type, this.way, this.line,
+      this.destination, this.isDeleted) {
     _setDefaultValues();
   }
-  Station.withId(this.id, this.name, this.slug, this.isDeleted) {
+  Station.withId(this.id, this.name, this.slug, this.type, this.way, this.line,
+      this.destination, this.isDeleted) {
     _setDefaultValues();
   }
   Station.fromMap(Map<String, dynamic> o) {
     id = o['id'] as int;
     name = o['name'] as String;
     slug = o['slug'] as String;
+    type = o['type'] as String;
+    way = o['way'] as String;
+    line = o['line'] as String;
+    destination = o['destination'] as String;
     isDeleted = o['isDeleted'] != null ? o['isDeleted'] == 1 : null;
   }
   // FIELDS (Station)
   int id;
   String name;
   String slug;
+  String type;
+  String way;
+  String line;
+  String destination;
   bool isDeleted;
 
   BoolResult saveResult;
@@ -110,6 +132,22 @@ class Station {
       map['slug'] = slug;
     }
 
+    if (type != null) {
+      map['type'] = type;
+    }
+
+    if (way != null) {
+      map['way'] = way;
+    }
+
+    if (line != null) {
+      map['line'] = line;
+    }
+
+    if (destination != null) {
+      map['destination'] = destination;
+    }
+
     if (isDeleted != null) {
       map['isDeleted'] = forQuery ? (isDeleted ? 1 : 0) : isDeleted;
     }
@@ -131,6 +169,22 @@ class Station {
       map['slug'] = slug;
     }
 
+    if (type != null) {
+      map['type'] = type;
+    }
+
+    if (way != null) {
+      map['way'] = way;
+    }
+
+    if (line != null) {
+      map['line'] = line;
+    }
+
+    if (destination != null) {
+      map['destination'] = destination;
+    }
+
     if (isDeleted != null) {
       map['isDeleted'] = forQuery ? (isDeleted ? 1 : 0) : isDeleted;
     }
@@ -149,7 +203,7 @@ class Station {
   }
 
   List<dynamic> toArgs() {
-    return [id, name, slug, isDeleted];
+    return [id, name, slug, type, way, line, destination, isDeleted];
   }
 
   static Future<List<Station>> fromWebUrl(String url) async {
@@ -234,7 +288,7 @@ class Station {
   /// Returns a <List<BoolResult>>
   Future<List<BoolResult>> saveAll(List<Station> stations) async {
     final results = _mnStation.saveAll(
-        'INSERT OR REPLACE INTO stations (id,  name, slug,isDeleted)  VALUES (?,?,?,?)',
+        'INSERT OR REPLACE INTO stations (id,  name, slug, type, way, line, destination,isDeleted)  VALUES (?,?,?,?,?,?,?,?)',
         stations);
     return results;
   }
@@ -245,8 +299,8 @@ class Station {
   Future<int> _upsert() async {
     try {
       id = await _mnStation.rawInsert(
-          'INSERT OR REPLACE INTO stations (id,  name, slug,isDeleted)  VALUES (?,?,?,?)',
-          [id, name, slug, isDeleted]);
+          'INSERT OR REPLACE INTO stations (id,  name, slug, type, way, line, destination,isDeleted)  VALUES (?,?,?,?,?,?,?,?)',
+          [id, name, slug, type, way, line, destination, isDeleted]);
       saveResult = BoolResult(
           success: true, successMessage: 'Station id=$id updated successfuly');
       return id;
@@ -263,7 +317,7 @@ class Station {
   /// Returns a <List<BoolResult>>
   Future<List<BoolResult>> upsertAll(List<Station> stations) async {
     final results = await _mnStation.rawInsertAll(
-        'INSERT OR REPLACE INTO stations (id,  name, slug,isDeleted)  VALUES (?,?,?,?)',
+        'INSERT OR REPLACE INTO stations (id,  name, slug, type, way, line, destination,isDeleted)  VALUES (?,?,?,?,?,?,?,?)',
         stations);
     return results;
   }
@@ -701,6 +755,26 @@ class StationFilterBuilder extends SearchCriteria {
     return _slug = setField(_slug, 'slug', DbType.text);
   }
 
+  StationField _type;
+  StationField get type {
+    return _type = setField(_type, 'type', DbType.text);
+  }
+
+  StationField _way;
+  StationField get way {
+    return _way = setField(_way, 'way', DbType.text);
+  }
+
+  StationField _line;
+  StationField get line {
+    return _line = setField(_line, 'line', DbType.text);
+  }
+
+  StationField _destination;
+  StationField get destination {
+    return _destination = setField(_destination, 'destination', DbType.text);
+  }
+
   StationField _isDeleted;
   StationField get isDeleted {
     return _isDeleted = setField(_isDeleted, 'isDeleted', DbType.bool);
@@ -1020,6 +1094,27 @@ class StationFields {
   static TableField _fSlug;
   static TableField get slug {
     return _fSlug = _fSlug ?? SqlSyntax.setField(_fSlug, 'slug', DbType.text);
+  }
+
+  static TableField _fType;
+  static TableField get type {
+    return _fType = _fType ?? SqlSyntax.setField(_fType, 'type', DbType.text);
+  }
+
+  static TableField _fWay;
+  static TableField get way {
+    return _fWay = _fWay ?? SqlSyntax.setField(_fWay, 'way', DbType.text);
+  }
+
+  static TableField _fLine;
+  static TableField get line {
+    return _fLine = _fLine ?? SqlSyntax.setField(_fLine, 'line', DbType.text);
+  }
+
+  static TableField _fDestination;
+  static TableField get destination {
+    return _fDestination = _fDestination ??
+        SqlSyntax.setField(_fDestination, 'destination', DbType.text);
   }
 
   static TableField _fIsDeleted;

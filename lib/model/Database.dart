@@ -16,13 +16,17 @@ const tableStations = SqfEntityTable(
     fields: [
       SqfEntityField('name', DbType.text),
       SqfEntityField('slug', DbType.text),
+      SqfEntityField('type', DbType.text),
+      SqfEntityField('way', DbType.text),
+      SqfEntityField('line', DbType.text),
+      SqfEntityField('destination', DbType.text)
     ]
 );
 
 @SqfEntityBuilder(myDbModel)
 const myDbModel = SqfEntityModel(
     modelName: 'StationsModel', // optional
-    databaseName: 'StationsORM.db',
+    databaseName: 'StationsORMv2.db',
     databaseTables: [tableStations],
     bundledDatabasePath: null
 );
